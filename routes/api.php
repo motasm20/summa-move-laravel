@@ -29,31 +29,6 @@ Route::post('/login', function (Request $request) {
     ]);
 });
 
-// ✅ Authenticated user info ophalen (handig voor Flutter)
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-// ✅ Openbare route: iedereen mag oefeningen bekijken
-Route::get('/exercises', [ExerciseController::class, 'index']);
-
-// ✅ Beveiligde routes: alleen toegankelijk met geldig Bearer token
-Route::middleware('auth:sanctum')->group(function () {
-
-    // 🔒 Alleen admins mogen oefeningen beheren
-    Route::middleware('is_admin')->group(function () {
-        Route::post('/exercises', [ExerciseController::class, 'store']);
-        Route::put('/exercises/{exercise}', [ExerciseController::class, 'update']);
-        Route::delete('/exercises/{exercise}', [ExerciseController::class, 'destroy']);
-    });
-
-    // 🔐 Alle ingelogde gebruikers kunnen hun eigen prestaties beheren
-    Route::get('/performances', [PerformanceController::class, 'index']);
-    Route::post('/performances', [PerformanceController::class, 'store']);
-    Route::put('/performances/{performance}', [PerformanceController::class, 'update']);
-    Route::delete('/performances/{performance}', [PerformanceController::class, 'destroy']);
-});
-
 // ✅ Registratie route (voor Flutter)
 Route::post('/register', function (Request $request) {
     $validated = $request->validate([
@@ -62,7 +37,7 @@ Route::post('/register', function (Request $request) {
         'password' => 'required|string|min:6',
     ]);
 
-    $user = \App\Models\User::create([
+    $user = User::create([
         'name' => $validated['name'],
         'email' => $validated['email'],
         'password' => bcrypt($validated['password']),
@@ -77,3 +52,32 @@ Route::post('/register', function (Request $request) {
     ]);
 });
 
+// ✅ Openbare route: iedereen mag oefeningen bekijken
+Route::get('/exercises', [ExerciseController::class, 'index']);
+
+// ✅ Authenticated user info ophalen (handig voor Flutter)
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+// ✅ Beveiligde routes: alleen toegankelijk met geldig Bearer token
+Route::middleware('auth:sanctum')->group(function () {
+
+    // ✅ Beschermde test route voor je testklasse
+    Route::get('/protected-route', function () {
+        return response()->json(['message' => 'Toegang toegestaan!']);
+    });
+
+    // 🔒 Alleen admins mogen oefeningen beheren
+    Route::middleware('is_admin')->group(function () {
+        Route::post('/exercises', [ExerciseController::class, 'store']);
+        Route::put('/exercises/{exercise}', [ExerciseController::class, 'update']);
+        Route::delete('/exercises/{exercise}', [ExerciseController::class, 'destroy']);
+    });
+
+    // 🔐 Alle ingelogde gebruikers kunnen hun eigen prestaties beheren
+    Route::get('/performances', [PerformanceController::class, 'index']);
+    Route::post('/performances', [PerformanceController::class, 'store']);
+    Route::put('/performances/{performance}', [PerformanceController::class, 'update']);
+    Route::delete('/performances/{performance}', [PerformanceController::class, 'destroy']);
+});
