@@ -27,10 +27,6 @@
                 <a href="{{ route('admin.performances.index') }}" class="text-sm text-gray-700 hover:text-blue-600">
                     Prestaties
                 </a>
-
-                <a href="{{ route('dashboard') }}" class="text-sm text-gray-700 hover:text-blue-600">
-                    Dashboard
-                </a>
                 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
