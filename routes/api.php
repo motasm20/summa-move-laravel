@@ -13,7 +13,7 @@ use App\Models\User;
 |--------------------------------------------------------------------------
 */
 
-// ✅ Login route voor token (via Sanctum)
+// Login route voor token (via Sanctum)
 Route::post('/login', function (Request $request) {
     $user = User::where('email', $request->email)->first();
 
@@ -29,7 +29,7 @@ Route::post('/login', function (Request $request) {
     ]);
 });
 
-// ✅ Registratie route (voor Flutter)
+// Registratie route (voor Flutter)
 Route::post('/register', function (Request $request) {
     $validated = $request->validate([
         'name' => 'required|string|max:255',
@@ -52,30 +52,30 @@ Route::post('/register', function (Request $request) {
     ]);
 });
 
-// ✅ Openbare route: iedereen mag oefeningen bekijken
+//  Openbare route: iedereen mag oefeningen bekijken
 Route::get('/exercises', [ExerciseController::class, 'index']);
 
-// ✅ Authenticated user info ophalen (handig voor Flutter)
+//  Authenticated user info ophalen (handig voor Flutter)
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// ✅ Beveiligde routes: alleen toegankelijk met geldig Bearer token
+//  Beveiligde routes: alleen toegankelijk met geldig Bearer token
 Route::middleware('auth:sanctum')->group(function () {
 
-    // ✅ Beschermde test route voor je testklasse
+    //  Beschermde test route voor je testklasse
     Route::get('/protected-route', function () {
         return response()->json(['message' => 'Toegang toegestaan!']);
     });
 
-    // 🔒 Alleen admins mogen oefeningen beheren
+    // Alleen admins mogen oefeningen beheren
     Route::middleware('is_admin')->group(function () {
         Route::post('/exercises', [ExerciseController::class, 'store']);
         Route::put('/exercises/{exercise}', [ExerciseController::class, 'update']);
         Route::delete('/exercises/{exercise}', [ExerciseController::class, 'destroy']);
     });
 
-    // 🔐 Alle ingelogde gebruikers kunnen hun eigen prestaties beheren
+    //  Alle ingelogde gebruikers kunnen hun eigen prestaties beheren
     Route::get('/performances', [PerformanceController::class, 'index']);
     Route::post('/performances', [PerformanceController::class, 'store']);
     Route::put('/performances/{performance}', [PerformanceController::class, 'update']);
