@@ -12,7 +12,7 @@
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
             <div>
                 <a href="{{ route('admin.exercises.index') }}" class="text-lg font-bold text-blue-600">
-                    🏋️ SummaMove Admin
+                    Summa Move Admin
                 </a>
             </div>
             <div class="flex items-center space-x-4">
